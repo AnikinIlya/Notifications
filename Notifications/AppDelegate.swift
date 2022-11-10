@@ -11,14 +11,15 @@ import UserNotifications
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
+    
     var window: UIWindow?
     let notificationCenter = UNUserNotificationCenter.current()
-
-
+    
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         requestAutorization()
+        notificationCenter.delegate = self
         return true
     }
     
@@ -63,3 +64,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 }
 
+extension AppDelegate: UNUserNotificationCenterDelegate {
+    //Вызывается если приложение находится на переднем плане и приходит уведомление
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        
+        completionHandler([.alert, .sound])
+    }
+    
+    //Используется для выбора действий по тапу на уведомление
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse,
+        withCompletionHandler completionHandler: @escaping () -> Void) {
+            
+            if response.notification.request.identifier == "Local Notification" {
+                print("Handling notification with the Local Notification Identifire")
+            }
+            
+            completionHandler()
+    }
+}
